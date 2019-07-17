@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}New Instance{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+	  <div>
+		  <label for='id_title'>title</label>
+		  <input type="text" value="" name="title" id="id_title"/>
+	  </div>
+	  <div>
+		  <label for="id_duration">duration(s)</label>
+		  <input type="text" name="duration" id="id_duration" value="0" />
+	  </div>
+	<div>
+		<label>ports</label>
+		1<input id="id_port1" type="checkbox" name="port1" checked>
+		2<input id="id_port2" type="checkbox" name="port2">
+		3<input id="id_port3" type="checkbox" name="port3">
+		4<input id="id_port4" type="checkbox" name="port4">
+	</div>
+	<div>
+		<label for="id_mute_audio">mute audio</label>
+		<input type="radio" name="mute_audio" id="id_mute_audio"/>
+	</div>
+	<div>
+		<label for="id_bits">bits</label>
+		<select name="bits" id="id_bits">
+			<option value="8">8</option>	
+			<option value="10">10</option>	
+		</select>
+	</div>
+	<div>
+		<label for="id_format">output format</label>
+		<select name="format" id="id_format">
+			<option value="origin">keep as input</option>
+			<option value="1920x1080x50.00">1920x1080x50.00</option>
+			<option value="1920x1080x25.00">1920x1080x25.00</option>
+			<option value="1280x720x50.00">1280x720x50.00</option>
+			<option value="1280x720x25.00">1280x720x25.00</option>
+		</select>
+	</div>
+	<div>
+		<label for="id_interlaced">interlaced</label>
+		<input type="radio" name="interlaced" id="id_interlaced"/>
+	</div>
+	<div>
+		<label for="id_input_file">file</label>
+		<select name="input_file" id="id_input_file">
+			<option value="file1">cc.ts</option>	
+		</select>
+	</div>
+	<hr>
+	<div>
+		<input type="submit" value="Start">
+		<input type="button" onclick="window.location='/'" value="Cancel">
+		<input type="reset" name="reset" id="reset" value="Reset">
+	</div>
+  </form>
+{% endblock %}
