@@ -90,7 +90,7 @@ def create():
                 p = psutil.Popen(shlex.split(cmdline), stdout=PIPE)
             except Exception as e:
                 flash('failed! %s' % str(e))
-                return render_template('blog/create.html')
+                # return render_template('blog/create.html')
             database = get_db()
             database.execute(
                 'INSERT INTO instance (process_id, author_id, parameter, title, ports, status)'
@@ -152,9 +152,9 @@ def update(id):
 @login_required
 def delete(id):
     get_post(id)
-    database = get_db()
-    database.execute('DELETE FROM post WHERE id = ?', (id,))
-    database.commit()
+    db = get_db()
+    db.execute('DELETE FROM instance WHERE id = ?', (id,))
+    db.commit()
     return redirect(url_for('blog.index'))
 
 @bp.route('/<int:id>/start', methods=('GET',))
