@@ -95,7 +95,7 @@ def create():
             database.execute(
                 'INSERT INTO instance (process_id, author_id, parameter, title, ports, status)'
                 ' VALUES (?, ?, ?, ?, ?, ?)',
-                (p.pid(), g.user['id'], cmdline, request.form['title'], ','.join(ports), 'on')
+                (p.pid, g.user['id'], cmdline, request.form['title'], ','.join(ports), 'on')
             )
             database.commit()
             return redirect(url_for('blog.index'))
