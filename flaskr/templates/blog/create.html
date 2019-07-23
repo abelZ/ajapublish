@@ -49,7 +49,9 @@
 	<div>
 		<label for="id_input_file">file</label>
 		<select name="input_file" id="id_input_file">
-			<option value="file1">cc.ts</option>	
+			{% for video in videos %}
+			<option>{{ video }}</option>	
+			{% endfor %}
 		</select>
 	</div>
 	<hr>

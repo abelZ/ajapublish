@@ -1,8 +1,11 @@
 MANIFEST.in
+setup.cfg
+setup.py
 flaskr/__init__.py
 flaskr/auth.py
 flaskr/blog.py
 flaskr/db.py
+flaskr/port.py
 flaskr/schema.sql
 flaskr.egg-info/PKG-INFO
 flaskr.egg-info/SOURCES.txt
