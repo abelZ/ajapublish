@@ -87,15 +87,15 @@ def create():
             cmdline += '-file %s' % request.form['input_file']
 
             try:
-                p = psutil.Popen(shlex.split(cmdline), stdout=PIPE)
-            except Exception as e:
-                flash('failed! %s' % str(e))
+                aja_process = psutil.Popen(shlex.split(cmdline), stdout=PIPE)
+            except Exception as except_all:
+                flash('failed! %s' % str(except_all))
                 # return render_template('blog/create.html')
             database = get_db()
             database.execute(
                 'INSERT INTO instance (process_id, author_id, parameter, title, ports, status)'
                 ' VALUES (?, ?, ?, ?, ?, ?)',
-                (p.pid, g.user['id'], cmdline, request.form['title'], ','.join(ports), 'on')
+                (aja_process.pid, g.user['id'], cmdline, request.form['title'], ','.join(ports), 'on')
             )
             database.commit()
             return redirect(url_for('blog.index'))
@@ -152,9 +152,9 @@ def update(id):
 @login_required
 def delete(id):
     get_post(id)
-    db = get_db()
-    db.execute('DELETE FROM instance WHERE id = ?', (id,))
-    db.commit()
+    database = get_db()
+    database.execute('DELETE FROM instance WHERE id = ?', (id,))
+    database.commit()
     return redirect(url_for('blog.index'))
 
 @bp.route('/<int:id>/start', methods=('GET',))
@@ -173,8 +173,8 @@ def start(id):
                 (process.pid(), id)
             )
             database.commit()
-        except Exception as e:
-            flash('failed! %s' % str(e))
+        except Exception as except_all:
+            flash('failed! %s' % str(except_all))
 
     return redirect(url_for('blog.index'))
 
@@ -194,7 +194,7 @@ def stop(id):
                 (-1, id)
             )
             database.commit()
-        except Exception as e:
-            flash('failed! %s' % str(e))
+        except Exception as except_all:
+            flash('failed! %s' % str(except_all))
 
     return redirect(url_for('blog.index'))
