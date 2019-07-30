@@ -30,8 +30,10 @@ def index():
     active_pids = []
     for ins in instances:
         pid = int(ins['process_id'])
+        print(pid)
         if foxutils.process.pid_match_name(pid, 'AjaPublish.exe'):
             active_pids.append(pid)
+    print(active_pids)
 
     return render_template('blog/index.html', instances=instances, pids=active_pids)
 
@@ -73,7 +75,7 @@ def create():
         if error:
             flash(error)
         else:
-            cmdline = 'AjaPublish.exe -ports %s ' % ','.join(ports)
+            cmdline = '%s/AjaPublish.exe -ports %s ' % (current_app.config['EXECUTE_DIR'], ','.join(ports))
             if 'bits' in request.form:
                 cmdline += '-bit %s ' % request.form['bits']
             if 'duration' in request.form:
@@ -86,11 +88,14 @@ def create():
                 cmdline += '-format %s ' % request.form['format']
             cmdline += '-file %s' % request.form['input_file']
 
+            print(cmdline)
+
             try:
                 aja_process = psutil.Popen(shlex.split(cmdline), stdout=PIPE)
+                aja_process.communicate()
             except Exception as except_all:
                 flash('failed! %s' % str(except_all))
-                # return render_template('blog/create.html')
+                return render_template('blog/create.html')
             database = get_db()
             database.execute(
                 'INSERT INTO instance (process_id, author_id, parameter, title, ports, status)'
@@ -165,12 +170,12 @@ def start(id):
     cmdline = post['parameter']
     if not foxutils.process.pid_match_name(pid, 'AjaPublish.exe'):
         try:
-            process = psutil.Popen(shlex.split(cmdline), stdout=PIPE)
+            process = psutil.Popen(shlex.split(cmdline, posix=False))
             database = get_db()
             database.execute(
                 'update instance set process_id = ?'
                 ' where id = ?',
-                (process.pid(), id)
+                (process.pid, id)
             )
             database.commit()
         except Exception as except_all:
@@ -184,6 +189,7 @@ def start(id):
 def stop(id):
     post = get_post(id)
     pid = int(post['process_id'])
+    print(pid)
     if foxutils.process.pid_match_name(pid, 'AjaPublish.exe'):
         try:
             psutil.Process(pid).kill()
@@ -194,6 +200,7 @@ def stop(id):
                 (-1, id)
             )
             database.commit()
+            print('kill')
         except Exception as except_all:
             flash('failed! %s' % str(except_all))
 

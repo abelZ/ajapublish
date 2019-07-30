@@ -16,14 +16,14 @@
           <div class="about">by {{ instance['username'] }} on {{ instance['created'].strftime('%Y-%m-%d') }}</div>
         </div>
         {% if g.user['id'] == instance['author_id'] %}
-		  {% if instance['status'] == 'on' %}
+		  {% if instance['process_id'] in pids %}
 		    <a class="action" href="{{ url_for('blog.stop', id=instance['id']) }}">Stop</a>
 		  {% else %}
 		    <a class="action" href="{{ url_for('blog.start', id=instance['id']) }}">Start</a>
 		  {% endif %}
           <a class="action" href="{{ url_for('blog.update', id=instance['id']) }}">Edit</a>
 		{% else %}
-		  {% if instance['status'] == 'on' %}
+		  {% if instance['process_id'] in pids %}
 		    <a class="action" href="">running</a>
 		  {% else %}
 		    <a class="action" href="">offline</a>
