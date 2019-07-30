@@ -30,10 +30,8 @@ def index():
     active_pids = []
     for ins in instances:
         pid = int(ins['process_id'])
-        print(pid)
         if foxutils.process.pid_match_name(pid, 'AjaPublish.exe'):
             active_pids.append(pid)
-    print(active_pids)
 
     return render_template('blog/index.html', instances=instances, pids=active_pids)
 
@@ -70,7 +68,7 @@ def create():
                     if str(i) in used_ports:
                         error = 'port %d already in use' % i
                         break
-                    ports.append(str(i))
+                    ports.append(str(i-1))
 
         if error:
             flash(error)
@@ -88,11 +86,8 @@ def create():
                 cmdline += '-format %s ' % request.form['format']
             cmdline += '-file %s' % request.form['input_file']
 
-            print(cmdline)
-
             try:
-                aja_process = psutil.Popen(shlex.split(cmdline), stdout=PIPE)
-                aja_process.communicate()
+                aja_process = psutil.Popen(shlex.split(cmdline, posix=False))
             except Exception as except_all:
                 flash('failed! %s' % str(except_all))
                 return render_template('blog/create.html')
@@ -189,7 +184,6 @@ def start(id):
 def stop(id):
     post = get_post(id)
     pid = int(post['process_id'])
-    print(pid)
     if foxutils.process.pid_match_name(pid, 'AjaPublish.exe'):
         try:
             psutil.Process(pid).kill()
@@ -200,7 +194,6 @@ def stop(id):
                 (-1, id)
             )
             database.commit()
-            print('kill')
         except Exception as except_all:
             flash('failed! %s' % str(except_all))
 
