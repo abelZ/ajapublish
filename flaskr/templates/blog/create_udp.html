@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}New Instance{% endblock %}</h1>
+
+  <script type="text/javascript">
+  </script>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+	  <table>
+		  <tr>
+			  <td width="15%">
+				  <label for="id_protocol">protocol</label>
+			  </td>
+			  <td>
+				  <select name="protocol" id="id_protocol" onchange="window.location='/create_'+this.options[this.selectedIndex].value">
+					  <option value="aja">AJA</option>	
+					  <option value="udp">UDP</option>	
+					  <option value="rtp">RTP</option>	
+				  </select>
+			  </td>
+		  </tr>
+		  <script type="text/javascript">
+			  var protocolEl = document.getElementById("id_protocol");
+              protocolEl.value = "{{ protocol }}";
+		  </script>
+		  <tr>
+			  <td>
+				  <label for="id_dst">destination</label>
+			  </td>
+			  <td>
+				  <input type="text" value="ip:port" name="dst" id="id_dst"/>
+			  </td>
+		  </tr>
+		  <tr>
+			  <td>
+				  <label for="id_input_file">file</label>
+			  </td>
+			  <td>
+				  <select name="input_file" id="id_input_file" onchange=getIdx()>
+					{% for video in videos %}
+					<option>{{ video }}</option>	
+					{% endfor %}
+				</select>
+			</td>
+		  </tr>
+	  </table>
+	  <div align="right">
+		  <input type="submit" value="Start">
+		  <input type="button" onclick="window.location='/'" value="Cancel">
+		  <input type="reset" name="reset" id="reset" value="Reset">
+	  </div>
+  </form>
+{% endblock %}

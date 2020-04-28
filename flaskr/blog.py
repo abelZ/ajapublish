@@ -36,6 +36,30 @@ def index():
     return render_template('blog/index.html', instances=instances, pids=active_pids)
 
 
+@bp.route('/create_udp', methods=('GET', 'POST'))
+@login_required
+def create_udp():
+    video_files = foxutils.path.listfiles(current_app.config['VIDEO_DIR'], ['.mp4', '.ts'])
+    if request.method == 'POST':
+            return redirect(url_for('blog.index'))
+    return render_template('blog/create_udp.html', videos=video_files, protocol='udp')
+
+
+@bp.route('/create_rtp', methods=('GET', 'POST'))
+@login_required
+def create_rtp():
+    video_files = foxutils.path.listfiles(current_app.config['VIDEO_DIR'], ['.mp4', '.ts'])
+    if request.method == 'POST':
+            return redirect(url_for('blog.index'))
+    return render_template('blog/create_udp.html', videos=video_files, protocol='rtp')
+
+
+@bp.route('/create_aja', methods=('GET', 'POST'))
+@login_required
+def create_aja():
+    return redirect(url_for('blog.create'))
+
+
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required
 def create():
@@ -56,11 +80,15 @@ def create():
             used_ports = []
             database = get_db()
             instances = database.execute(
-                'SELECT p.id, ports'
-                ' FROM instance p ORDER BY created DESC'
-                ).fetchall()
+                'SELECT p.id, process_id, author_id, created, parameter, title, status'
+                ' FROM instance p JOIN user u ON p.author_id = u.id'
+                ' ORDER BY created DESC'
+            ).fetchall()
+            active_pids = []
             for ins in instances:
-                used_ports.extend(ins['ports'].split(','))
+                pid = int(ins['process_id'])
+                if foxutils.process.pid_match_name(pid, 'AjaPublish.exe'):
+                    used_ports.extend(ins['ports'].split(','))
 
             ports = []
             for i in range(1, 5, 1):
